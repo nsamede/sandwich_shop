@@ -1,69 +1,69 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sandwich Shop App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+      home: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          if (constraints.maxWidth <= 600) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  for (var i = 0; i < 20; i++)
+                    Container(
+                      width: 300,
+                      height: 100,
+                      margin: EdgeInsets.all(20),
+                      color: Colors.red,
+                      child: Center(child: OrderItemDisplay(3, "BLT")),
+                    ),
+                ],
+              ),
+            );
+          } else {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (var i = 0; i < 20; i++)
+                    Container(
+                      width: 300,
+                      height: 100,
+                      margin: EdgeInsets.all(20),
+                      color: Colors.red,
+                      child: Center(child: OrderItemDisplay(3, "BLT")),
+                    ),
+                ],
+              ),
+            );
+          }
+        },
       ),
-      home: const MyHomePage(title: 'Sandwich Shop'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class OrderItemDisplay extends StatelessWidget {
+  final String itemType;
+  final int quantity;
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  const OrderItemDisplay(this.quantity, this.itemType, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Welcome to my Sandwich Shop!',
-              style: TextStyle(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                foreground: Paint()
-                  ..color = Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'View Basket',
-        child: const Icon(Icons.shopping_basket),
+    return Text(
+      "$quantity $itemType sandwich(es): ${'🥪' * quantity}",
+      style: TextStyle(
+        color: Colors.green,
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
       ),
     );
   }
