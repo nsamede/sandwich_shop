@@ -10,61 +10,43 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          if (constraints.maxWidth <= 600) {
-            return SingleChildScrollView(
-              child: Column(
+      title: 'Sandwich Shop App',
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Sandwich Counter')),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const OrderItemDisplay(5, "Footlong"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (var i = 0; i < 20; i++)
-                    Container(
-                      width: 300,
-                      height: 100,
-                      margin: EdgeInsets.all(20),
-                      color: Colors.red,
-                      child: Center(child: OrderItemDisplay(3, "BLT")),
-                    ),
+                  ElevatedButton(
+                    onPressed: () => print("Add button pressed!"),
+                    child: const Text("Add"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => print("Remove button pressed!"),
+                    child: const Text("Remove"),
+                  ),
                 ],
               ),
-            );
-          } else {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (var i = 0; i < 20; i++)
-                    Container(
-                      width: 300,
-                      height: 100,
-                      margin: EdgeInsets.all(20),
-                      color: Colors.red,
-                      child: Center(child: OrderItemDisplay(3, "BLT")),
-                    ),
-                ],
-              ),
-            );
-          }
-        },
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
 class OrderItemDisplay extends StatelessWidget {
-  final String itemType;
   final int quantity;
+  final String itemType;
 
   const OrderItemDisplay(this.quantity, this.itemType, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      "$quantity $itemType sandwich(es): ${'🥪' * quantity}",
-      style: TextStyle(
-        color: Colors.green,
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
-      ),
-    );
+    return Text('$quantity $itemType sandwich(es): ${'🥪' * quantity}');
   }
 }
