@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -54,14 +55,12 @@ class _OrderScreenState extends State<OrderScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
+                StyledButton(
                   onPressed: _increaseQuantity,
-                  child: const Text("Add"),
+                  text: "Add",
+                  icon: Icon(Icons.add),
                 ),
-                ElevatedButton(
-                  onPressed: _decreaseQuantity,
-                  child: const Text("Remove"),
-                ),
+                StyledButton(onPressed: _decreaseQuantity, text: "Remove"),
               ],
             ),
           ],
@@ -80,5 +79,30 @@ class OrderItemDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text('$quantity $itemType sandwich(es): ${'🥪' * quantity}');
+  }
+}
+
+class StyledButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final Icon? icon;
+
+  const StyledButton({
+    super.key,
+    required this.onPressed,
+    this.text = "",
+    this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+      ),
+      child: icon == null ? Text(text) : Row(children: [icon!, Text(" $text")]),
+    );
   }
 }
