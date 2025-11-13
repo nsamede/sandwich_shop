@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -28,8 +27,17 @@ class OrderScreen extends StatefulWidget {
   }
 }
 
+enum SandwichType {
+  footLong("Footlong"),
+  sixInch("Six Inch");
+
+  const SandwichType(this.string);
+  final String string;
+}
+
 class _OrderScreenState extends State<OrderScreen> {
   int _quantity = 0;
+  SandwichType _sandwichType = SandwichType.footLong;
 
   void _increaseQuantity() {
     if (_quantity < widget.maxQuantity) {
@@ -43,16 +51,22 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 
+  void _setSandwichType(SandwichType sandwichType) {
+    setState(() => _sandwichType = sandwichType);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Sandwich Counter")),
       body: Center(
         child: Column(
+          spacing: 15,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            OrderItemDisplay(_quantity, "Footlong"),
+            OrderItemDisplay(_quantity, _sandwichType.string),
             Row(
+              spacing: 10,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 StyledButton(
@@ -68,6 +82,19 @@ class _OrderScreenState extends State<OrderScreen> {
                   icon: Icon(Icons.remove_circle_outline_rounded),
                 ),
               ],
+            ),
+            SegmentedButton(
+              segments: <ButtonSegment<SandwichType>>[
+                ...SandwichType.values.map(
+                  (e) => ButtonSegment<SandwichType>(
+                    value: e,
+                    label: Text(e.string),
+                  ),
+                ),
+              ],
+              selected: <SandwichType>{_sandwichType},
+              onSelectionChanged: (Set<SandwichType> newSelection) =>
+                  _setSandwichType(newSelection.first),
             ),
           ],
         ),
@@ -105,8 +132,8 @@ class StyledButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColorDark,
+        foregroundColor: Theme.of(context).primaryTextTheme.labelSmall?.color,
       ),
       child: icon == null ? Text(text) : Row(children: [icon!, Text(" $text")]),
     );
