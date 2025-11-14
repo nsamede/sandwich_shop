@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sandwich_shop/repositories/pricing_repository.dart';
 import 'views/app_styles.dart';
 import 'repositories/order_repository.dart';
 
@@ -33,6 +34,7 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   late final OrderRepository _orderRepository;
+  late final PricingRepository _pricingRepository;
   final TextEditingController _notesController = TextEditingController();
   bool _isFootlong = true;
   bool _isToasted = false;
@@ -42,6 +44,8 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
     super.initState();
     _orderRepository = OrderRepository(maxQuantity: widget.maxQuantity);
+    _pricingRepository = PricingRepository(_orderRepository);
+    _pricingRepository.isFootlong = _isFootlong;
     _notesController.addListener(() {
       setState(() {});
     });
@@ -68,7 +72,10 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   void _onSandwichTypeChanged(bool value) {
-    setState(() => _isFootlong = value);
+    setState(() {
+      _isFootlong = value;
+      _pricingRepository.isFootlong = value;
+    });
   }
 
   void _onBreadTypeSelected(BreadType? value) {
@@ -114,6 +121,7 @@ class _OrderScreenState extends State<OrderScreen> {
               itemType: sandwichType,
               breadType: _selectedBreadType,
               orderNote: noteForDisplay,
+              price: _pricingRepository.price,
             ),
             const SizedBox(height: 20),
             Row(
@@ -221,6 +229,7 @@ class OrderItemDisplay extends StatelessWidget {
   final String itemType;
   final BreadType breadType;
   final String orderNote;
+  final int price;
 
   const OrderItemDisplay({
     super.key,
@@ -228,12 +237,13 @@ class OrderItemDisplay extends StatelessWidget {
     required this.orderNote,
     required this.quantity,
     required this.itemType,
+    required this.price,
   });
 
   @override
   Widget build(BuildContext context) {
     String displayText =
-        "$quantity ${breadType.name} $itemType sandwich(es): ${"🥪" * quantity}";
+        "$quantity ${breadType.name} $itemType sandwich(es): ${"🥪" * quantity} for £$price";
 
     return Column(
       children: [
