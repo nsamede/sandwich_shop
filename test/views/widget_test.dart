@@ -94,9 +94,10 @@ void main() {
     });
 
     testWidgets('updates note with Switch', (WidgetTester tester) async {
+      const testKey = Key("sandwichTypeSwitch");
       await tester.pumpWidget(const App());
       expect(find.textContaining("white footlong sandwich"), findsOneWidget);
-      await tester.tap(find.byType(Switch));
+      await tester.tap(find.byKey(testKey));
       await tester.pumpAndSettle();
       expect(find.textContaining("white six-inch sandwich"), findsOneWidget);
     });
