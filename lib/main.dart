@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'views/app_styles.dart';
+import 'repositories/order_repository.dart';
 
 enum BreadType { white, wheat, wholemeal }
 
@@ -31,7 +32,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  int _quantity = 0;
+  late final OrderRepository _orderRepository;
   final TextEditingController _notesController = TextEditingController();
   bool _isFootlong = true;
   BreadType _selectedBreadType = BreadType.white;
@@ -39,6 +40,7 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   void initState() {
     super.initState();
+    _orderRepository = OrderRepository(maxQuantity: widget.maxQuantity);
     _notesController.addListener(() {
       setState(() {});
     });
@@ -51,22 +53,16 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   VoidCallback? _getIncreaseCallback() {
-    if (_quantity < widget.maxQuantity) {
-      return () {
-        setState(() => _quantity++);
-      };
+    if (_orderRepository.canIncrement) {
+      return () => setState(_orderRepository.increment);
     }
-
     return null;
   }
 
   VoidCallback? _getDecreaseCallback() {
-    if (_quantity > 0) {
-      return () {
-        setState(() => _quantity--);
-      };
+    if (_orderRepository.canDecrement) {
+      return () => setState(_orderRepository.decrement);
     }
-
     return null;
   }
 
@@ -80,7 +76,7 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 
-  List<DropdownMenuEntry<BreadType>> _buildDropDownEntries() {
+  List<DropdownMenuEntry<BreadType>> _buildDropdownEntries() {
     List<DropdownMenuEntry<BreadType>> entries = [];
     for (BreadType bread in BreadType.values) {
       DropdownMenuEntry<BreadType> newEntry = DropdownMenuEntry<BreadType>(
@@ -92,40 +88,28 @@ class _OrderScreenState extends State<OrderScreen> {
     return entries;
   }
 
-  void _increaseQuantity() {
-    if (_quantity < widget.maxQuantity) {
-      setState(() => _quantity++);
-    }
-  }
-
-  void _decreaseQuantity() {
-    if (_quantity > 0) {
-      setState(() => _quantity--);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    String sandwichType = "footlong";
+    String sandwichType = 'footlong';
     if (!_isFootlong) {
-      sandwichType = "six-inch";
+      sandwichType = 'six-inch';
     }
 
     String noteForDisplay;
     if (_notesController.text.isEmpty) {
-      noteForDisplay = "No notes added.";
+      noteForDisplay = 'No notes added.';
     } else {
       noteForDisplay = _notesController.text;
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Sandwich Counter", style: heading1)),
+      appBar: AppBar(title: const Text('Sandwich Counter', style: heading1)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             OrderItemDisplay(
-              quantity: _quantity,
+              quantity: _orderRepository.quantity,
               itemType: sandwichType,
               breadType: _selectedBreadType,
               orderNote: noteForDisplay,
@@ -134,9 +118,9 @@ class _OrderScreenState extends State<OrderScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("six-inch", style: normalText),
+                const Text('six-inch', style: normalText),
                 Switch(value: _isFootlong, onChanged: _onSandwichTypeChanged),
-                const Text("footlong", style: normalText),
+                const Text('footlong', style: normalText),
               ],
             ),
             const SizedBox(height: 10),
@@ -144,16 +128,16 @@ class _OrderScreenState extends State<OrderScreen> {
               textStyle: normalText,
               initialSelection: _selectedBreadType,
               onSelected: _onBreadTypeSelected,
-              dropdownMenuEntries: _buildDropDownEntries(),
+              dropdownMenuEntries: _buildDropdownEntries(),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(40.0),
               child: TextField(
-                key: const Key("notes_textfield"),
+                key: const Key('notes_textfield'),
                 controller: _notesController,
                 decoration: const InputDecoration(
-                  labelText: "Add a note (e.g., no onions)",
+                  labelText: 'Add a note (e.g., no onions)',
                 ),
               ),
             ),
@@ -164,14 +148,14 @@ class _OrderScreenState extends State<OrderScreen> {
                 StyledButton(
                   onPressed: _getIncreaseCallback(),
                   icon: Icons.add,
-                  label: "Add",
+                  label: 'Add',
                   backgroundColor: Colors.green,
                 ),
                 const SizedBox(width: 8),
                 StyledButton(
                   onPressed: _getDecreaseCallback(),
                   icon: Icons.remove,
-                  label: "Remove",
+                  label: 'Remove',
                   backgroundColor: Colors.red,
                 ),
               ],
