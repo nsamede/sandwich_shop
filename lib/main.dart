@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sandwich_shop/repositories/pricing_repository.dart';
 import 'package:sandwich_shop/views/app_styles.dart';
 import 'package:sandwich_shop/models/sandwich.dart';
 import 'package:sandwich_shop/models/cart.dart';
@@ -30,8 +31,89 @@ class OrderScreen extends StatefulWidget {
   }
 }
 
+class CartSummary extends StatefulWidget {
+  final Cart cart;
+  const CartSummary({super.key, required this.cart});
+
+  @override
+  State<CartSummary> createState() {
+    return _CartSummaryState();
+  }
+}
+
+class _CartSummaryState extends State<CartSummary> {
+  @override
+  Widget build(BuildContext context) {
+    Map<Sandwich, int> sandwiches = widget.cart.sandwiches;
+
+    return Container(
+      height: 350,
+      margin: EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        border: BoxBorder.all(color: Colors.black, width: 1),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          double dividerWidth = 50;
+          return SizedBox(
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 0.5 * (constraints.maxWidth - dividerWidth),
+                  child: ListView(
+                    children: [
+                      for (Sandwich sandwich in sandwiches.keys)
+                        Card(
+                          margin: EdgeInsets.only(
+                            left: 25,
+                            top: 10,
+                            bottom: 10,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Sandwich Type: ${sandwich.name}"),
+                                Text("Bread Type: ${sandwich.breadType.name}"),
+                                Text(
+                                  "Size: ${sandwich.isFootlong ? "Footlong" : "Six Inch"}",
+                                ),
+                                Text("Quantity: ${sandwiches[sandwich]}"),
+                                Text(
+                                  "Price: £${PricingRepository().calculatePrice(quantity: sandwiches[sandwich]!, isFootlong: sandwich.isFootlong)}",
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+
+                VerticalDivider(width: dividerWidth),
+
+                SizedBox(
+                  width: 0.5 * (constraints.maxWidth - dividerWidth),
+                  child: Center(
+                    child: Text(
+                      "Total: £${widget.cart.total}",
+                      style: heading1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
 class _OrderScreenState extends State<OrderScreen> {
-  final Cart _cart = Cart(maxItems: 5);
+  final Cart _cart = Cart(maxItems: OrderScreen().maxQuantity);
   final TextEditingController _notesController = TextEditingController();
 
   SandwichType _selectedSandwichType = SandwichType.veggieDelight;
@@ -180,12 +262,19 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sandwich Counter', style: heading1)),
+      appBar: AppBar(
+        leading: SizedBox(
+          height: 100,
+          child: Image.asset("assets/images/logo.png"),
+        ),
+        title: const Text('Sandwich Counter', style: heading1),
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              CartSummary(cart: _cart),
               SizedBox(
                 height: 300,
                 child: Image.asset(

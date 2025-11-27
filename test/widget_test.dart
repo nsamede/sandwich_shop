@@ -75,4 +75,52 @@ void main() {
       expect(find.byType(ElevatedButton), findsOneWidget);
     });
   });
+
+  group('CartSummary', () {
+    testWidgets('displays sandwich card', (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+      await tester.tap(find.widgetWithText(StyledButton, 'Add to Cart'));
+      await tester.pump();
+
+      expect(find.byType(Card), findsOneWidget);
+    });
+
+    testWidgets('card has correct details', (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+      await tester.tap(find.widgetWithText(StyledButton, 'Add to Cart'));
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(Card, "Sandwich Type: Veggie Delight"),
+        findsOneWidget,
+      );
+      expect(find.widgetWithText(Card, "Bread Type: white"), findsOneWidget);
+      expect(find.widgetWithText(Card, "Size: Footlong"), findsOneWidget);
+      expect(find.widgetWithText(Card, "Quantity:"), findsOneWidget);
+      expect(find.widgetWithText(Card, "Price: £11"), findsOneWidget);
+    });
+
+    testWidgets('price is displayed correcty', (WidgetTester tester) async {
+      await tester.pumpWidget(const App());
+      await tester.tap(find.widgetWithText(StyledButton, 'Add to Cart'));
+      await tester.pump();
+
+      expect(find.text('Total: £11'), findsOneWidget);
+    });
+
+    testWidgets('sandwich added notification displays correctly', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(const App());
+      await tester.tap(find.widgetWithText(StyledButton, 'Add to Cart'));
+      await tester.pump();
+      expect(
+        find.widgetWithText(
+          SnackBar,
+          'Added 1 footlong Veggie Delight sandwich(es) on white bread to cart',
+        ),
+        findsOneWidget,
+      );
+    });
+  });
 }
