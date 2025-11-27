@@ -195,6 +195,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 initialSelection: _selectedSandwichType,
                 onSelected: _onSandwichTypeChanged,
                 dropdownMenuEntries: _buildSandwichTypeEntries(),
+                requestFocusOnTap: false,
               ),
               const SizedBox(height: 20),
               Row(
@@ -213,6 +214,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 initialSelection: _selectedBreadType,
                 onSelected: _onBreadTypeChanged,
                 dropdownMenuEntries: _buildBreadTypeEntries(),
+                requestFocusOnTap: false,
               ),
               const SizedBox(height: 20),
               Row(
