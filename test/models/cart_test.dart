@@ -8,7 +8,7 @@ void main() {
 
     test('Items should not exceed maxItems', () {
       for (int i = 0; i < cart.maxItems + 1; i++) {
-        cart.addSandwich(
+        cart.add(
           Sandwich(
             type: SandwichType.veggieDelight,
             isFootlong: true,
@@ -32,8 +32,8 @@ void main() {
           breadType: BreadType.wheat,
         );
 
-        cart.addSandwich(sandwich, 1);
-        cart.addSandwich(sandwich, 1);
+        cart.add(sandwich, 1);
+        cart.add(sandwich, 1);
 
         expect(<Sandwich, int>{sandwich: 2}, cart.sandwiches);
       },
@@ -48,7 +48,7 @@ void main() {
         breadType: BreadType.wheat,
       );
 
-      cart.addSandwich(sandwich, 2);
+      cart.add(sandwich, 2);
       cart.removeSandwich(sandwich);
 
       expect(cart.sandwiches, <Sandwich, int>{sandwich: 1});
@@ -64,7 +64,7 @@ void main() {
           isFootlong: true,
           breadType: BreadType.wheat,
         );
-        cart.addSandwich(sandwich, 1);
+        cart.add(sandwich, 1);
         cart.removeSandwich(sandwich);
 
         expect(cart.sandwiches, <Sandwich, int>{});
@@ -77,7 +77,7 @@ void main() {
         isFootlong: true,
         breadType: BreadType.wheat,
       );
-      cart.addSandwich(sandwich, 2);
+      cart.add(sandwich, 2);
       cart.clearCart();
 
       expect(cart.sandwiches, <Sandwich, int>{});
@@ -97,8 +97,8 @@ void main() {
         isFootlong: false,
         breadType: BreadType.wholemeal,
       );
-      cart.addSandwich(sandwich1, 1);
-      cart.addSandwich(sandwich2, 2);
+      cart.add(sandwich1, 1);
+      cart.add(sandwich2, 2);
 
       expect(cart.sandwiches, <Sandwich, int>{sandwich1: 1, sandwich2: 2});
       expect(cart.items, 3);
@@ -124,9 +124,9 @@ void main() {
         breadType: BreadType.white,
       );
 
-      cart.addSandwich(sandwich1, 1);
-      cart.addSandwich(sandwich2, 1);
-      cart.addSandwich(sandwich3, 1);
+      cart.add(sandwich1, 1);
+      cart.add(sandwich2, 1);
+      cart.add(sandwich3, 1);
 
       cart.removeSandwich(sandwich1);
       cart.removeSandwich(sandwich3);

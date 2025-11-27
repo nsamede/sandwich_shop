@@ -12,7 +12,7 @@ class Cart {
   int get items => _items;
   Map<Sandwich, int> get sandwiches => _sandwiches;
 
-  void addSandwich(Sandwich sandwich, int quantity) {
+  void add(Sandwich sandwich, int quantity) {
     if (_items + quantity <= maxItems) {
       // If the same sandwich is already in the cart, just increase the quantity.
       if (_sandwiches.containsKey(sandwich)) {
