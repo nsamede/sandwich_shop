@@ -42,9 +42,11 @@ class Cart {
       if (_sandwiches[sandwich] == 1) {
         // Remove the sandwich from the cart if there is only 1.
         _sandwiches.remove(sandwich);
+        _items--;
       } else {
         // Otherwise just decrease the quantity.
         _sandwiches[sandwich] = _sandwiches[sandwich]! - 1;
+        _items--;
       }
     }
   }
